@@ -1,6 +1,10 @@
-import React, { useState } from 'react';
-import { createEmployee } from '../services/EmployeeService';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import {
+  createEmployee,
+  getEmployee,
+  updateEmployee,
+} from '../services/EmployeeService';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const EmployeeComponent = () => {
   const [firstName, setFirstName] = useState('');
@@ -13,7 +17,23 @@ const EmployeeComponent = () => {
     email: '',
   });
 
+  const { id } = useParams();
+
   const navigator = useNavigate();
+
+  useEffect(() => {
+    if (id) {
+      getEmployee(id)
+        .then((response) => {
+          setFirstName(response.data.firstName);
+          setLastName(response.data.lastName);
+          setEmail(response.data.email);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  }, [id]);
 
   function validateFrom() {
     let valid = true;
@@ -40,21 +60,42 @@ const EmployeeComponent = () => {
     return valid;
   }
 
-  function saveEmployee(e) {
+  function saveOrUpdateEmployee(e) {
     e.preventDefault();
     if (validateFrom()) {
       const employee = { firstName, lastName, email };
-      createEmployee(employee).then((response) => {
-        navigator('/employees');
-      });
+      if (id) {
+        updateEmployee(id, employee)
+          .then((response) => {
+            navigator('/employees');
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      } else {
+        createEmployee(employee)
+          .then((response) => {
+            navigator('/employees');
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
     }
+  }
+
+  function pageTitle() {
+    if (id) {
+      return <h2 className='my-3 text-center'>Update Employee</h2>;
+    }
+    return <h2 className='my-3 text-center'>Add New Employee</h2>;
   }
 
   return (
     <div className='container'>
       <div className='row'>
         <div className='card mt-3 col-md-6 offset-md-3 offset-md-3'>
-          <h2 className='my-3 text-center'>Add New Employee</h2>
+          {pageTitle()}
           <div className='card-body'>
             <form>
               <div className='form-group mb-3'>
@@ -103,7 +144,10 @@ const EmployeeComponent = () => {
                   <div className='invalid-feedback'>{errors.email}</div>
                 )}
               </div>
-              <button className='btn btn-primary mt-3' onClick={saveEmployee}>
+              <button
+                className='btn btn-primary mt-3'
+                onClick={saveOrUpdateEmployee}
+              >
                 Save Employee
               </button>
             </form>
