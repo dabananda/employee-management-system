@@ -14,9 +14,17 @@ public class DepartmentMapper {
     }
 
     // convert departmentdto into department jpa entity
+//    public static Department mapToDepartment(DepartmentDto departmentDto) {
+//        return new Department(
+//                departmentDto.getId(),
+//                departmentDto.getDepartmentName(),
+//                departmentDto.getDepartmentDescription()
+//        );
+//    }
     public static Department mapToDepartment(DepartmentDto departmentDto) {
+        // When the ID is null (for new department creation), don't pass it to the constructor
         return new Department(
-                departmentDto.getId(),
+                departmentDto.getId() != null ? departmentDto.getId() : 0L,  // Avoid null value for ID during mapping
                 departmentDto.getDepartmentName(),
                 departmentDto.getDepartmentDescription()
         );
