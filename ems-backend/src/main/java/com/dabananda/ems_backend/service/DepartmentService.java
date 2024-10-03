@@ -4,4 +4,5 @@ import com.dabananda.ems_backend.dto.DepartmentDto;
 
 public interface DepartmentService {
     DepartmentDto createDepartment(DepartmentDto departmentDto);
+    DepartmentDto getDepartmentById(Long departmentId);
 }
