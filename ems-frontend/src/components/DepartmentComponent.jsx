@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import {
   createDepartment,
   getDepartmentById,
+  updateDepartment,
 } from '../services/DepartmentService';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -19,16 +20,24 @@ const DepartmentComponent = () => {
     });
   }, [id]);
 
-  function saveDepartment(e) {
+  function saveOrUpdateDepartment(e) {
     e.preventDefault();
     const department = { departmentName, departmentDescription };
-    createDepartment(department)
-      .then((response) => {
-        navigator('/departments');
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    if (id) {
+      updateDepartment(id, department)
+        .then((response) => {
+          navigator('/departments');
+        })
+        .catch((error) => console.error(error));
+    } else {
+      createDepartment(department)
+        .then((response) => {
+          navigator('/departments');
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
   }
 
   function pageTitle() {
@@ -68,7 +77,7 @@ const DepartmentComponent = () => {
               <button
                 className='btn btn-primary mt-2'
                 type='submit'
-                onClick={(e) => saveDepartment(e)}
+                onClick={(e) => saveOrUpdateDepartment(e)}
               >
                 Save Department
               </button>
