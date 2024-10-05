@@ -19,6 +19,7 @@ const App = () => {
           <Route path='/update-employee/:id' element={<EmployeeComponent />}></Route>
           <Route path='/departments' element={<ListDepartmentComponent />}></Route>
           <Route path='/add-department' element={<DepartmentComponent />}></Route>
+          <Route path='/update-department/:id' element={<DepartmentComponent />}></Route>
         </Routes>
         <FooterComponent />
       </BrowserRouter>
